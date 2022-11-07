@@ -1,17 +1,17 @@
-name = "<plugin-name>"
+name = "lapce-tabnine"
 version = "0.0.0"
-author = "<your name>"
-display-name = "<plugin-display-name>"
-description = "<plugin-description>"
-wasm = "bin/<plugin-name>.wasm"
+author = "Arjun <arjunp0710@gmail.com>"
+display-name = "Tabine"
+description = "Lapce LSP plugin for tabnine autocomplete"
+wasm = "bin/lapce-tabnine.wasm"
 
 [activation]
-language = []
-workspace-contains = []
+language = [""]
+workspace-contains = ["**/*"]
 
-[config."volt.serverPath"]
-default = ""
-description = "Path to custom LSP executable"
+# [config."volt.serverPath"]
+# default = ""
+# description = "Path to custom LSP executable"
 
 # [config."volt.serverArgs"]
 # default = []

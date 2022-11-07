@@ -1,10 +1,13 @@
 use anyhow::Result;
 use lapce_plugin::{
     psp_types::{
-        lsp_types::{request::Initialize, DocumentFilter, DocumentSelector, InitializeParams, Url, MessageType},
+        lsp_types::{
+            request::Initialize, DocumentFilter, DocumentSelector, InitializeParams, MessageType,
+            Url,
+        },
         Request,
     },
-    register_plugin, LapcePlugin, VoltEnvironment, PLUGIN_RPC,
+    register_plugin, Http, LapcePlugin, VoltEnvironment, PLUGIN_RPC,
 };
 use serde_json::Value;
 
@@ -16,9 +19,9 @@ register_plugin!(State);
 fn initialize(params: InitializeParams) -> Result<()> {
     let document_selector: DocumentSelector = vec![DocumentFilter {
         // lsp language id
-        language: Some(String::from("language_id")),
+        language: Some(String::from("")),
         // glob pattern
-        pattern: Some(String::from("**/*.{ext1,ext2}")),
+        pattern: Some(String::from("**/*")),
         // like file:
         scheme: None,
     }];
@@ -30,6 +33,7 @@ fn initialize(params: InitializeParams) -> Result<()> {
     // serverPath = "[path or filename]"
     // serverArgs = ["--arg1", "--arg2"]
     // ```
+    // get latest version of tabnine
     if let Some(options) = params.initialization_options.as_ref() {
         if let Some(lsp) = options.get("lsp") {
             if let Some(args) = lsp.get("serverArgs") {
@@ -61,7 +65,12 @@ fn initialize(params: InitializeParams) -> Result<()> {
             }
         }
     }
-
+    let url = "https://update.tabnine.com/bundles/version";
+    let mut resp = Http::get(url)?;
+    if resp.status_code.is_success() {
+        let body = resp.body_read_all()?;
+        PLUGIN_RPC.stderr(&format!("{:#?}", body));
+    }
     // Architecture check
     let _ = match VoltEnvironment::architecture().as_deref() {
         Ok("x86_64") => "x86_64",
@@ -115,7 +124,10 @@ impl LapcePlugin for State {
             Initialize::METHOD => {
                 let params: InitializeParams = serde_json::from_value(params).unwrap();
                 if let Err(e) = initialize(params) {
-                    PLUGIN_RPC.window_show_message(MessageType::ERROR, format!("plugin returned with error: {e}"))
+                    PLUGIN_RPC.window_show_message(
+                        MessageType::ERROR,
+                        format!("plugin returned with error: {e}"),
+                    )
                 }
             }
             _ => {}
