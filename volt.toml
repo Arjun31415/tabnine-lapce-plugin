@@ -1,8 +1,8 @@
+author = "Arjun <arjunp0710@gmail.com>"
+description = "Lapce LSP plugin for tabnine autocomplete"
+display-name = "Tabine"
 name = "lapce-tabnine"
 version = "0.0.0"
-author = "Arjun <arjunp0710@gmail.com>"
-display-name = "Tabine"
-description = "Lapce LSP plugin for tabnine autocomplete"
 wasm = "bin/lapce-tabnine.wasm"
 
 [activation]
@@ -13,9 +13,9 @@ workspace-contains = ["**/*"]
 # default = ""
 # description = "Path to custom LSP executable"
 
-# [config."volt.serverArgs"]
-# default = []
-# description = ""
+[config."volt.serverArgs"]
+default = ["--client=lapce"]
+description = "client args"
 
 # [config."lspSettingArray"]
 # default = []
