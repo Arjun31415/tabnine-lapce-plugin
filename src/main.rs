@@ -66,23 +66,24 @@ fn initialize(params: InitializeParams) -> Result<()> {
         }
     }
     let url = "https://update.tabnine.com/bundles/version";
+    PLUGIN_RPC.stderr("Helo");
     let mut resp = Http::get(url)?;
     if resp.status_code.is_success() {
         let body = resp.body_read_all()?;
-        PLUGIN_RPC.stderr(&format!("{:#?}", body));
+        let converted_body = std::str::from_utf8(&body).unwrap();
+        PLUGIN_RPC.stderr(&format!("Tabine Version: {}", converted_body));
     }
     // Architecture check
+    let platform = match VoltEnvironment::operating_system().as_deref() {
+        Ok("macos") => "apple-darwin",
+        Ok("linux") => "unknown-linux-gnu",
+        Ok("windows") => "pc-windows-gnu",
+        p => panic!("unsupported platform {:#?}", p),
+    };
+
     let _ = match VoltEnvironment::architecture().as_deref() {
         Ok("x86_64") => "x86_64",
         Ok("aarch64") => "aarch64",
-        _ => return Ok(()),
-    };
-
-    // OS check
-    let _ = match VoltEnvironment::operating_system().as_deref() {
-        Ok("macos") => "macos",
-        Ok("linux") => "linux",
-        Ok("windows") => "windows",
         _ => return Ok(()),
     };
 
