@@ -145,6 +145,10 @@ fn initialize(params: InitializeParams) -> Result<()> {
     // Available language IDs
     // https://github.com/lapce/lapce/blob/HEAD/lapce-proxy/src/buffer.rs#L173
     PLUGIN_RPC.stderr("Starting Tabnine LSP");
+    PLUGIN_RPC.stderr(&format!(
+        "Lsp path: {},\n Server args:{:#?}\n document_selector: {:#?}\n InitializeParams: {:#?}",
+        server_path, server_args, document_selector, params.initialization_options
+    ));
     PLUGIN_RPC.start_lsp(
         server_path,
         server_args,
