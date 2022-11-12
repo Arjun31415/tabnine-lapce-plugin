@@ -1,7 +1,7 @@
 [package]
 edition = "2021"
 name = "lapce-tabnine"
-version = "0.1.0"
+version = "0.0.0"
 resolver = "2"
 
 [target.'cfg(target_os = "wasi")'.dependencies]
@@ -25,5 +25,3 @@ lto = true
 codegen-units = 1
 strip = true
 
-[dependencies]
-reqwest = "0.11.12"
